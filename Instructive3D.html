@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructive3D</title>
+    <link rel="icon" type="image/x-icon" href="./static/images/logo.webp">
+    <style>
+        .author-info {
+            font-family: 'Roboto', sans-serif;
+            text-align: center; /* Center the author and affiliation information */
+        }
+        .author-names {
+            font-size: 20px;
+        }
+        .affiliations {
+            font-size: 17px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        .affiliation-item {
+            margin-top: 10px;
+        }
+        .superscript {
+            font-size: 0.8em;
+            vertical-align: super;
+        }
+
+
+        /* Container for the scroller */
+        .scroller-container {
+            overflow: hidden;
+            width: 100%;
+            background-color: #E5E5E5; /* Optional background color */
+            position: relative;
+        }
+
+        /* Scroller styling */
+        .scroller {
+            display: flex;
+            gap: 20px;
+            animation: scroll 10s linear infinite; /* Smooth scrolling animation */
+        }
+
+        /* Individual items in the scroller */
+        .item {
+            text-align: center;
+        }
+
+        .item img {
+            display: inline-block;
+            height: 500px; /* Adjust the height to your preference */
+            width: auto;   /* Maintains the aspect ratio */
+            /* Remove resizing styles to preserve original size */
+            border-radius: 8px; /* Optional: Add rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
+        }
+
+        /* Scrolling animation */
+        @keyframes scroll {
+            0% {
+                transform: translateX(0%);
+            }
+            100% {
+                transform: translateX(-50%); /* Moves by half since we duplicate content */
+            }
+        }
+        body {
+            background-color: #E5E5E5;
+            font-family: 'Noto Sans', sans-serif;
+            color: #333333; /* Dark gray */
+        }
+        .content-container {
+            max-width: 80%; /* Constrain content width */
+            margin: 0 auto; /* Center content within parent */
+        }
+        .title1 {
+            font-size: 50px; /* Adjust the size as needed */
+        }
+        .title2 {
+            font-size: 36px; /* Adjust the size as needed */
+        }
+        .title3 {
+            font-size: 18px; /* Adjust the size as needed */
+            text-align: justify;
+        }
+        .minimal-button {
+            display: inline-flex;
+            align-items: center; /* Align icon and text vertically */
+            justify-content: center;
+            background-color: #333333; /* Dark button background */
+            border: none;
+            color: #E5E5E5; /* Light text color */
+            padding: 12px 24px; /* Comfortable padding */
+            font-size: 16px; /* Readable font size */
+            border-radius: 8px; /* Smooth rounded corners */
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold; /* Make text stand out */
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: all 0.3s ease; /* Smooth hover effect */
+            gap: 8px; /* Space between icon and text */
+        }
+
+        .minimal-button:hover {
+            background-color: #444444; /* Slightly lighter background on hover */
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2); /* Slightly deeper shadow */
+        }
+
+        .minimal-button svg {
+            width: 25px;
+            height: 25px;
+            fill: #E5E5E5; /* Icon color */
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div style="width: 75%; margin: auto; padding: 20px;">
+        <center>
+        <h1 class="title1">Instructive3D: Editing Large Reconstruction Models with Text Instructions</h1>
+        <p style="font-size: 28px;"><i>WACV 2025</i></p>
+        </center>
+    </div>
+
+    
+    <!-- Author and affiliation section -->
+    <div class="author-info">
+      <div class="author-names">
+        <span>
+          <a href="https://www.linkedin.com/in/kunal-kathare-09735a1bb/" style="text-decoration: none; color: rgb(0, 104, 202);">Kunal A Kathare<span class="superscript">*</span></a>, 
+          <a href="https://www.linkedin.com/in/ankit-dhiman-46109a174/" style="text-decoration: none; color: rgb(0, 104, 202);">Ankit Dhiman<span class="superscript">*</span></a>, 
+          <a  style="text-decoration: none; color: rgb(0, 104, 202);">K Vikas Gowda</a>, 
+          <a  style="text-decoration: none; color: rgb(0, 104, 202);">Siddharth Aravindan</a>,
+          <a  style="text-decoration: none; color: rgb(0, 104, 202);">Shubham Monga</a>, 
+          <a  style="text-decoration: none; color: rgb(0, 104, 202);">Basavaraja S Vandrotti</a>, 
+                <a style="text-decoration: none; color: rgb(0, 104, 202);">Lokesh R Boregowda</a>
+              </span>
+            </div>
+            <div class="affiliations">
+              <!-- <div class="affiliation-item"> -->
+                <!-- <span style="font-size: 22px;">Samsung R&D Institute India - Bangalore</span> -->
+              <!-- </div> -->
+              <div class="affiliation-item">
+                <span><i><span class="superscript">*</span>Equal Contribution</i></span>
+              </div>
+        </div>
+      </div>
+      
+      <div style="width: 75%; margin: auto;padding-top: 30px;">
+        <center>
+          <a href="https://arxiv.org/abs/2501.04374" target="_blank" class="minimal-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M19 2H8c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V7l-5-5zm0 18H8V4h10.17L19 6.83V20zM10 14h8v2h-8v-2zm0-4h8v2h-8v-2z"/>
+          </svg>
+            arxiv
+        </a>
+        </center>
+      </div>
+
+      <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin: auto; ">
+        <!-- Content on the left -->
+        <div style="width: 50%; padding-right: 30px;">
+            <h2 class="title2" style="font-size: 28px; text-align: center;">
+                <b>TL;DR: </b>We enable fine-grained text-based editing in LRMs using Triplane latent and diffusion process.
+            </h2>
+        </div>
+    
+        <!-- Audio file on the right -->
+        <div style="width: 30%; text-align: center; ">
+            <h4 style="font-size: 18px; text-align: center;">
+              Checkout this podcast generated by <a href="https://notebooklm.google.com/" style="text-decoration: none; color: rgb(0, 104, 202);">NotebookLM</a>
+            </h4>
+            <audio controls>
+                <source src="./static/podcast.wav" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+
+    <div style="width: 50%; margin: auto; padding: 20px;">
+        <center>
+        <div style="width: 100%; margin: auto; ">
+            <center>
+            <img src="./static/images/teaser.png" width="700" height="500"/>
+        </center>
+        </div>
+        </center>
+    </div>
+    
+    <div>
+        <center>
+        <h2 class="title1">Abstract</h2>
+        </center>
+        <div style="width: 60%; margin: auto; padding: 10px;">
+        <center>
+            <p class="title3">
+            Transformer based methods have enabled users to create, modify and comprehend text and image data. Recently proposed Large Reconstruction Models (LRMs) further extend this by providing the ability to generate high-quality 3D models with the help of a single object image. These models, however, lack the ability to manipulate or edit the finer details, such as adding standard design patterns or changing the colour and reflectance of the generated objects, thus lacking fine-grained control that may be very helpful in domains such as augmented reality, animation and gaming. Naively training LRMs for this purpose would require generating precisely edited images and 3D object pairs, which is computationally expensive. In this paper, we propose Instructive3D, a novel LRM based model that integrates generation and fine-grained editing, through user text prompts, of 3D objects into a single model. We accomplish this by adding an adapter that performs a diffusion process conditioned on a text prompt specifying edits in the triplane latent space representation of 3D object models. Our method does not require the generation of edited 3D objects. Additionally, Instructive3D allows us to perform geometrically consistent modifications as the edits through user-defined text prompts are applied to the triplane latent representation thus enhancing the versatility and precision of 3D objects generated. We compare the objects generated by Instructive3D and a baseline that first generates the 3D object meshes using a standard LRM model and then edits these 3D objects using text prompts when images are provided from the Objaverse LVIS dataset. We find tha Instructive3D produces qualitatively superior 3D objects with the properties specified by the edit prompts.
+            </p>
+        </center>
+        </div>
+    </div>
+
+
+    <div style="width: 80%; margin: auto; padding: 30px;">
+        <center>
+        <img src="./static/images/arch.png" alt="Interpolate start reference image." width="100%" height="auto"/>
+        </center>
+        <center>
+        <p class="title3">
+            <b>Architecture of our method Instructive3D.</b> The triplane is first generated by the LRM encoder (in this case Real3D), <i>then each plane of the triplane is then separated, normalized between [-1,1] and processed through its dedicated encoder, trained specifically for the corresponding plane. The resulting latent planes have their channels concatenated and passed through a conditional UNet model for denoising, in conjunction with a text embedding obtained from a CLIP transformer based on the input text prompt. The denoised output is then separated back into the three planes, which are passed through their respective decoders. Finally, the planes are stacked together to form the conditioned triplane, reflecting the user-specified text-based modifications.</i> Finally, the conditioned triplane is passed through the decoder of LRM model to obtain textured mesh and rendered video.
+        </p>
+        </center>
+    </div>
+
+    
+    <div style="width: 75%; margin: auto; padding: 20px;">
+      <h1 class="title1"><center>More Results</center></h1>
+    </div>
+    
+    <style>
+        .myGap{
+          margin-left: 7px;
+          margin-right: 7px;
+        }
+        .myContainer{
+          display: flex;
+          gap: 0px;
+        }
+        .image-box{
+          flex: 1;
+        }
+        .item {
+            text-align: center;
+          }
+
+          .item video {
+            display: inline-block;
+            height: 50%; /* Adjust the height to your preference */
+            width: auto;   /* Maintains the aspect ratio */
+            /* Remove resizing styles to preserve original size */
+            border-radius: 8px; /* Optional: Add rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
+          }
+
+          /* Scrolling animation */
+          @keyframes scroll {
+            0% {
+                transform: translateX(0%);
+            }
+            100% {
+                transform: translateX(-50%); /* Moves by half since we duplicate content */
+            }
+        }
+      </style>
+    <section>
+      
+      <div class="scroller-container">
+            <div class="scroller">
+                <div class="myGap">
+                    <p>
+                      <center><b>change color to red</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/ball_1.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/ball_1.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color to powder blue</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/ball_13.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/ball_13.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a glittery look to the ball</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/ball_15.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/ball_15.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color of barrel to bamboo green</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/barrel_2.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/barrel_2.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color of barrel to cream</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/barrel_5.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/barrel_5.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>apply leaves on the barrel</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/barrel_19.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/barrel_19.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add blue stripes to the barrel</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/barrel_39.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/barrel_39.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+
+          
+          <div class="scroller-container">
+            <div class="scroller">
+              <div class="myGap">
+                    <p>
+                      <center><b>change the color to ruby red</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/sofa_8.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/sofa_8.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>apply a purple gradient color to the can</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/beer_can_12.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/beer_can_12.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color of can to gold</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/beer_can_14.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/beer_can_14.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a marble pattern to the can</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/beer_can_48.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/beer_can_48.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color of bowl to turqoise</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/bowl_1.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/bowl_1.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color of bowl to gold</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/bowl_5.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/bowl_5.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change color of bowl to mint green</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/bowl_25.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/bowl_25.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+        </div>
+        
+
+        <div class="scroller-container">
+          <div class="scroller">
+            <div class="myGap">
+                    <p>
+                      <center><b>add a purple glittery look to the chair</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/chair_390.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/chair_390.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a velvet texture to the chair</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/chair_401.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/chair_401.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change the colour of clutch bag to cyan</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/clutch_bag_3.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/clutch_bag_3.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>apply marble texture to the clutch bag</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/clutch_bag_9.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/clutch_bag_9.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a velvet texture overlay to the clutch bag</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/clutch_bag_15.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/clutch_bag_15.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+
+        <div class="scroller-container">
+            <div class="scroller">
+                <div class="myGap">
+                  <p>
+                      <center><b>change the color of cup to purple</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/Dixie_cup_6.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/Dixie_cup_6.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a glittery overlay to cup</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/Dixie_cup_16.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/Dixie_cup_16.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a gradient design to cup</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/Dixie_cup_19.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/Dixie_cup_19.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a pastel gradient to the shoe</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/shoe_9.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/shoe_9.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a flame design to the shoe</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/shoe_13.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/shoe_13.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>add a brushed metal finish to the shoe</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/shoe_14.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/shoe_14.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change the color of sofa to red</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/sofa_1.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/sofa_1.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="myGap">
+                    <p>
+                      <center><b>change the color to purple</b></center>
+                    </p>
+                    <div class="myContainer">
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/real3d/sofa_13.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Real3D</b></center>
+                        </p>
+                      </div>
+                      <div class="image-box">
+                        <video autoplay controls muted loop playsinline width="250"><source src="./static/videos/tri2tri/sofa_13.mp4" type="video/mp4"/></video>
+                        <p>
+                          <center><b>Instructive3D</b></center>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            
+            <h1 class="title1"><center>Baseline Comparison</center></h1>
+        
+            <section>
+            <div class="scroller-container">
+                <div class="scroller">
+                    <div class="item">
+                    <p>
+                      <center><b>change color to red</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/ball_1.jpeg"/>
+                  </div>
+                  <div class="item">
+                    <p>
+                      <center><b>change color to powder blue</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/ball_13.jpeg"/>
+                  </div>
+                  <div class="item">
+                    <p>
+                      <center><b>add a glittery look to the ball</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/ball_15.jpeg"/>
+                  </div>
+                  <div class="item">
+                    <p>
+                      <center><b>change color of barrel to olive green</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/barrel_2.jpeg"/>
+                  </div>
+                  <div class="item">
+                    <p>
+                      <center><b>change color of barrel to cream</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/barrel_5.jpeg"/>
+                  </div>
+                  <div class="item">
+                    <p>
+                      <center><b>apply leaves on the barrel</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/barrel_19.jpeg"/>
+                  </div>
+                  <div class="item">
+                    <p>
+                      <center><b>add blue stripes to the barrel</b></center>
+                    </p>
+                    <img src="./static/images/supp_baselines/barrel_39.jpeg"/>
+                  </div>
+                </div>
+            </div>
+        
+        
+            <div class="scroller-container">
+                <div class="scroller">
+                    <div class="item">
+                        <p>
+                          <center><b>apply a purple gradient color to can</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/beer_can_12.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change color of can to gold</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/beer_can_14.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a marble effect to the can</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/beer_can_48.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change color of bowl to turqoise</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/bowl_1.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change color of bowl to gold</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/bowl_5.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change color of bowl to mint green</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/bowl_25.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a glittery look to chair</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/chair_390.jpeg"/>
+                      </div>
+                </div>
+            </div>
+        
+        
+            <div class="scroller-container">
+                <div class="scroller">
+                    <div class="item">
+                        <p>
+                          <center><b>add a velvet texture to the chair</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/chair_401.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change color of clutch bag to cyan</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/clutch_bag_3.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>apply marble texture to the clutch bag</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/clutch_bag_9.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a glossy texture to the clutch bag</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/clutch_bag_11.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a velvet texture to the clutch bag</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/clutch_bag_15.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change the color of cup to purple</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/Dixie_cup_6.jpeg"/>
+                      </div>
+                </div>
+            </div>
+        
+        
+            <div class="scroller-container">
+                <div class="scroller">
+                    <div class="item">
+                        <p>
+                          <center><b>add a glittery overlay to the cup</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/Dixie_cup_16.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a pastel gradient to the shoe</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/shoe_9.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a flame design to the shoe</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/shoe_13.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>add a brushed metal finish to the shoe</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/shoe_14.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change the color of sofa to red</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/sofa_1.jpeg"/>
+                      </div>
+                      <div class="item">
+                        <p>
+                          <center><b>change color of sofa to purple</b></center>
+                        </p>
+                        <img src="./static/images/supp_baselines/sofa_13.jpeg"/>
+                      </div>
+                </div>
+            </div>
+            </section>
+    
+    <div style="width: 80%; margin: auto; padding: 20px; text-align: center;">
+      <h2 class="title2">Thank You</h2>
+      <footer>
+        <p style="font-size: 18px;">&copy; 2024 Instructive3D.</p>
+        <p style="font-size: 18px;">Credits: <a href="https://www.linkedin.com/in/kunal-kathare-09735a1bb/" style="text-decoration: none; color: rgb(0, 104, 202);"><strong>Kunal A Kathare</strong></p>
+      </footer>
+    </div>
+    
+    <script>
+        const scroller = document.querySelector('.scroller');
+
+        // Duplicate items for infinite scrolling
+        const clone = scroller.innerHTML;
+        scroller.innerHTML += clone;
+    </script>
+
+</body>
+</html>
