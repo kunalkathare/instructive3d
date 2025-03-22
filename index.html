@@ -113,6 +113,24 @@
             height: 25px;
             fill: #E5E5E5; /* Icon color */
         }
+        .bibtex-container {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            /* max-width: 800px; */
+            display: flex;
+            flex-direction: column;
+        }
+        .bibtex-scroll-bar {
+            overflow-x: auto;
+        }
+        code {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -976,6 +994,24 @@
                 </div>
             </div>
             </section>
+
+    <div style="width: 80%; margin: auto; padding: 20px;">
+        <center><h2 class="title2">BibTeX</h2></center>
+        <div class="bibtex-container" >
+            <div class="bibtex-scroll-bar">
+                <code style="text-align: left; font-size:medium;">
+                    @InProceedings{Kathare_2025_WACV,
+                        author    = {Kathare, Kunal and Dhiman, Ankit and Gowda, K Vikas and Aravindan, Siddharth and Monga, Shubham and Vandrotti, Basavaraja Shanthappa and Boregowda, Lokesh R},
+                        title     = {Instructive3D: Editing Large Reconstruction Models with Text Instructions},
+                        booktitle = {Proceedings of the Winter Conference on Applications of Computer Vision (WACV)},
+                        month     = {February},
+                        year      = {2025},
+                        pages     = {3246-3256}
+                    }
+                </code>
+            </div>
+        </div>
+    </div>
     
     <div style="width: 80%; margin: auto; padding: 20px; text-align: center;">
       <h2 class="title2">Thank You</h2>
